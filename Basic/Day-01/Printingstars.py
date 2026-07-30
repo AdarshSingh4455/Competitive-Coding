@@ -12,7 +12,6 @@ for i in range(1, n + 1):
     
     print()
 
-# for i in range(n - 1, 0, -1): #agr hum i ko 0 se initiate krte toh output me ...2 baar 5 start wali line print hoti..
 for i in range(n - 1, 0, -1):
 
     for j in range(i):
