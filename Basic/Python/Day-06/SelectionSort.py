@@ -1,3 +1,4 @@
+#Selection Sort Algorithm
 nums = [21,34,23,54,65,45]
 
 def SelectionSort(nums):
@@ -11,4 +12,4 @@ def SelectionSort(nums):
             nums[i],nums[minIndex] = nums[minIndex],nums[i]
 
 SelectionSort(nums)
-print(f"List sorted by Selection Sort: {nums}")
+print(f"List sorted by Selection Sort:\n{nums}")
