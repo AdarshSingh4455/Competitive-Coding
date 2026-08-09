@@ -10,6 +10,13 @@ class Stack:
             return None
         return self.items.pop()
 
+    # It is for raising an exception when we don't want to hide the error...
+    # def pop(self):
+    # if not self.items:
+    #     raise IndexError("Stack is empty")
+
+    # return self.items.pop()
+
     def peek(self):
         if not self.items:
             return None
