@@ -2,7 +2,7 @@ class Stack:
     def __init__(self):
         self.items = []
 
-    def append(self, value):
+    def push(self, value):
         self.items.append(value)
 
     def pop(self):
@@ -32,9 +32,9 @@ class Stack:
         return self.items
 
 stack = Stack() #creating object naming stack..
-stack.append(10)
-stack.append(20)
-stack.append(30)
+stack.push(10)
+stack.push(20)
+stack.push(30)
 print(f"Elements in stacks: {stack.show()}")
 print(f"{stack.size()} to see the size of stack before deletion, by using size.")
 print(f"{stack.peek()} to see the top element before deletion, by using peek.") #it act as peak to see the top end element of stack..
