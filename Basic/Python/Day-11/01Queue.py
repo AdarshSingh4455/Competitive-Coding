@@ -7,5 +7,4 @@ queue.append(15)
 queue.append(21)
 
 print(queue.popleft())
-
 print(queue)
