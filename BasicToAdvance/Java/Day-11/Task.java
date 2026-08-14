@@ -21,13 +21,6 @@ public class Task implements Comparable<Task> {
         return name;
     }
 
-    public static void main(String[] args) {
-        Task task1 = new Task(1, 2, "Write code");
-        Task task2 = new Task(1, 1, "Review code");
-
-        System.out.println(task1.compareTo(task2));
-    }
-
     @Override
     public int compareTo(Task other){
         int priorityResult = Integer.compare(this.priority, other.priority);
