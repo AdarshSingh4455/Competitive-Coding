@@ -1,1 +1,249 @@
+name: Update Competitive Coding README
 
+on:
+  push:
+    branches:
+      - main
+
+  schedule:
+    - cron: "30 3 * * *"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate README statistics
+        shell: python
+        run: |
+          import os
+          import re
+          import subprocess
+          from pathlib import Path
+          from datetime import datetime, timezone
+
+          ROOT = Path(".")
+          README = ROOT / "README.md"
+
+          # ---------------------------------------------------------
+          # Commit count
+          # ---------------------------------------------------------
+
+          commit_count = subprocess.check_output(
+              ["git", "rev-list", "--count", "HEAD"],
+              text=True
+          ).strip()
+
+          # ---------------------------------------------------------
+          # File counters
+          # ---------------------------------------------------------
+
+          excluded_dirs = {
+              ".git",
+              ".github",
+              "__pycache__",
+              ".idea",
+              ".vscode"
+          }
+
+          def all_files():
+              for path in ROOT.rglob("*"):
+                  if not path.is_file():
+                      continue
+
+                  if any(part in excluded_dirs for part in path.parts):
+                      continue
+
+                  yield path
+
+          files = list(all_files())
+
+          python_files = [
+              p for p in files
+              if p.suffix.lower() == ".py"
+          ]
+
+          java_files = [
+              p for p in files
+              if p.suffix.lower() == ".java"
+          ]
+
+          leetcode_files = []
+
+          leetcode_dir = ROOT / "LeetCode"
+
+          if leetcode_dir.exists():
+              leetcode_files = [
+                  p for p in leetcode_dir.rglob("*")
+                  if p.is_file()
+                  and p.suffix.lower() in {".py", ".java", ".cpp", ".c"}
+              ]
+
+          # ---------------------------------------------------------
+          # Folder count
+          # ---------------------------------------------------------
+
+          folders = []
+
+          for path in ROOT.rglob("*"):
+              if not path.is_dir():
+                  continue
+
+              if any(part in excluded_dirs for part in path.parts):
+                  continue
+
+              folders.append(path)
+
+          # ---------------------------------------------------------
+          # Repository tree
+          # ---------------------------------------------------------
+
+          tree_excluded = {
+              ".git",
+              ".github",
+              "__pycache__",
+              ".idea",
+              ".vscode",
+              "profile"
+          }
+
+          directories = []
+
+          for path in ROOT.rglob("*"):
+              if not path.is_dir():
+                  continue
+
+              if any(part in tree_excluded for part in path.parts):
+                  continue
+
+              directories.append(path)
+
+          directories.sort(key=lambda p: str(p).lower())
+
+          tree_lines = ["Competitive-Coding/"]
+
+          for directory in directories:
+              parts = directory.parts
+
+              depth = len(parts)
+
+              if depth == 0:
+                  continue
+
+              prefix = "│   " * (depth - 1)
+
+              siblings = [
+                  p for p in directories
+                  if len(p.parts) == depth
+                  and p.parts[:-1] == parts[:-1]
+              ]
+
+              is_last = directory == siblings[-1] if siblings else True
+
+              connector = "└── " if is_last else "├── "
+
+              tree_lines.append(
+                  f"{prefix}{connector}{parts[-1]}/"
+              )
+
+          tree = "\n".join(tree_lines)
+
+          # ---------------------------------------------------------
+          # Date
+          # ---------------------------------------------------------
+
+          updated = datetime.now(timezone.utc).strftime(
+              "%d %b %Y, %H:%M UTC"
+          )
+
+          # ---------------------------------------------------------
+          # Dynamic stats block
+          # ---------------------------------------------------------
+
+          stats_block = f"""| 📌 Metric | 📈 Current Progress |
+          |---|---:|
+          | 🧾 Repository Commits | **{commit_count}** |
+          | 🐍 Python Source Files | **{len(python_files)}** |
+          | ☕ Java Source Files | **{len(java_files)}** |
+          | 🧩 LeetCode Problems | **{len(leetcode_files)}** |
+          | 📁 Learning Folders | **{len(folders)}** |
+          | 🔄 Status | **Actively Learning** |
+
+          **Last updated:** `{updated}` via GitHub Actions 🤖"""
+
+          # ---------------------------------------------------------
+          # Replace generated stats
+          # ---------------------------------------------------------
+
+          readme = README.read_text(
+              encoding="utf-8"
+          )
+
+          stats_pattern = re.compile(
+              r"<!-- AUTO-STATS:START -->.*?<!-- AUTO-STATS:END -->",
+              re.DOTALL
+          )
+
+          stats_replacement = (
+              "<!-- AUTO-STATS:START -->\n\n"
+              + stats_block.strip()
+              + "\n\n<!-- AUTO-STATS:END -->"
+          )
+
+          readme = stats_pattern.sub(
+              stats_replacement,
+              readme
+          )
+
+          # ---------------------------------------------------------
+          # Replace repository tree
+          # ---------------------------------------------------------
+
+          tree_pattern = re.compile(
+              r"<!-- AUTO-TREE:START -->.*?<!-- AUTO-TREE:END -->",
+              re.DOTALL
+          )
+
+          tree_replacement = (
+              "<!-- AUTO-TREE:START -->\n\n"
+              "```text\n"
+              + tree
+              + "\n```\n\n"
+              "> 💡 **This section is automatically generated.**\n"
+              "> Whenever a new folder is added, GitHub Actions updates this section automatically.\n\n"
+              "<!-- AUTO-TREE:END -->"
+          )
+
+          readme = tree_pattern.sub(
+              tree_replacement,
+              readme
+          )
+
+          README.write_text(
+              readme,
+              encoding="utf-8"
+          )
+
+      - name: Commit README updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add README.md
+
+          if git diff --cached --quiet; then
+            echo "README is already up to date."
+          else
+            git commit -m "docs: auto-update README"
+            git push
+          fi
