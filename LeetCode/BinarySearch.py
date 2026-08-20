@@ -1,4 +1,4 @@
-#Problem number &)$ on leetcode
+#Problem number 704 on leetcode
 
 class Solution(object):
     def __init__(self, nums=None, target=None):
