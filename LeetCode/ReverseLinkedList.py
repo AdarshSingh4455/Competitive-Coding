@@ -1,3 +1,5 @@
+# Question: Given the head of a singly linked list, reverse the list and
+# return its new head.
 class Solution:
     def reverseList(self, head):
         prev = None
