@@ -1,8 +1,8 @@
-public class BinarySearch {
+class BinarySearchSolution {
 	private int[] nums;
 	private int target;
 
-	public BinarySearch(int[] nums, int target) {
+	public BinarySearchSolution(int[] nums, int target) {
 		this.nums = nums;
 		this.target = target;
 	}
@@ -28,7 +28,7 @@ public class BinarySearch {
 	public static void main(String[] args) {
 		int[] nums = {-1, 0, 3, 5, 9, 12};
 		int target = 9;
-		BinarySearch solution = new BinarySearch(nums, target);
+		BinarySearchSolution solution = new BinarySearchSolution(nums, target);
 		System.out.println(solution.search(solution.nums, solution.target));
 	}
 }
