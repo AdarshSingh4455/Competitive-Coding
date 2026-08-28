@@ -18,10 +18,9 @@ class CircularLinkedList:
             new_node.next = new_node
             return
 
-        else:
-            self.tail.next = new_node
-            new_node.next = self.head
-            self.tail = new_node
+        self.tail.next = new_node
+        new_node.next = self.head
+        self.tail = new_node
 
 cll = CircularLinkedList()
 cll.addAtTail(5)
