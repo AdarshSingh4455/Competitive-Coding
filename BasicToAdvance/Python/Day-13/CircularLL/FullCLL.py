@@ -161,24 +161,24 @@ class CircularLinkedList:
             idx += 1
 
     # Search index of Node
-def searchNode(self, data):
-    if self.head is None:
+    def searchNode(self, data):
+        if self.head is None:
+            return -1
+
+        current = self.head
+        idx = 0
+
+        while True:
+            if current.data == data:
+                return idx
+
+            current = current.next
+            idx += 1
+
+            if current == self.head:
+                break
+
         return -1
-
-    current = self.head
-    idx = 0
-
-    while True:
-        if current.data == data:
-            return idx
-
-        current = current.next
-        idx += 1
-
-        if current == self.head:
-            break
-
-    return -1
 
 
 # ==========================================
