@@ -5,11 +5,11 @@ public class BracketsBalancing {
 
     public static boolean balance_brackets(String s){
         java.util.Stack<Character> stack = new java.util.Stack<>();
-        char[] pairs = {
-            ')', '(',
-            '}', '{',
-            ']', '['
-        };
+        // char[] pairs = {
+        //     ')', '(',
+        //     '}', '{',
+        //     ']', '['
+        // };
         
         for(char c : s.toCharArray()){
             if(c == '(' || c == '{' || c == '['){
