@@ -2,7 +2,7 @@ from collections import deque
 
 def level_order(root):
     if root is None:
-        return
+        return []
 
     queue = deque([root])
     result = []
@@ -16,10 +16,10 @@ def level_order(root):
 
             level.append(node.val)
 
-            if root.left is None:
+            if node.left:
                 queue.append(node.left)
 
-            if root.right is None:
+            if node.right:
                 queue.append(node.right)
 
         result.append(level)
