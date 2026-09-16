@@ -20,6 +20,14 @@ def insert(root, value):
 
     return root
 
+def inorder(root):
+    if root is None:
+        return
+    
+    inorder(root.left)
+    print(root.val)
+    inorder(root.right)
+
 root = TreeNode(50)
 root.left = TreeNode(30)
 root.left.right = TreeNode(40)
@@ -32,3 +40,5 @@ value = int(input("Enter a node to insert in the tree: "))
 res = insert(root,value)
 
 print(f"Value {value} inserted in BST!")
+
+inorder(root)
