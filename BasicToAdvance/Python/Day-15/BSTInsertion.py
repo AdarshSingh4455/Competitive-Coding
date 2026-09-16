@@ -37,7 +37,7 @@ root.right.right = TreeNode(80)
 
 value = int(input("Enter a node to insert in the tree: "))
 
-res = insert(root,value)
+root = insert(root,value)
 
 print(f"Value {value} inserted in BST!")
 
